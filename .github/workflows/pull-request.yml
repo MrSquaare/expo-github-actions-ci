@@ -43,6 +43,7 @@ jobs:
 
       - name: Cache Gradle
         uses: actions/cache@v4
+        id: gradle
         with:
           path: |
             ~/.gradle/caches
@@ -53,6 +54,7 @@ jobs:
 
       - name: Cache Build
         uses: actions/cache@v4
+        id: build
         with:
           path: |
             android/build
@@ -63,7 +65,8 @@ jobs:
 
       - name: Build
         working-directory: ./android
-        run: ./gradlew assembleDebug --no-daemon --build-cache --parallel
+        if: steps.gradle.outputs.cache-hit != 'true' || steps.build.outputs.cache-hit != 'true'
+        run: ./gradlew assembleDebug --build-cache --parallel
 
   mobile-ios-build:
     runs-on: macos-15
@@ -88,6 +91,7 @@ jobs:
 
       - name: CocoaPods Cache
         uses: actions/cache@v4
+        id: pods
         with:
           path: ios/Pods
           key: ${{ runner.os }}-pods-${{ steps.fingerprint.outputs.hash }}
@@ -100,6 +104,7 @@ jobs:
 
       - name: Cache Xcode derived data
         uses: actions/cache@v4
+        id: xcode-derived-data
         with:
           path: ios/build
           key: ${{ runner.os }}-xcode-derived-data-${{ steps.fingerprint.outputs.hash }}
@@ -108,4 +113,5 @@ jobs:
 
       - name: Build
         working-directory: ./ios
+        if: steps.pods.outputs.cache-hit != 'true' || steps.xcode-derived-data.outputs.cache-hit != 'true'
         run: set -o pipefail && xcodebuild build -workspace expogithubactionsci.xcworkspace -scheme expogithubactionsci -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath build | xcbeautify
