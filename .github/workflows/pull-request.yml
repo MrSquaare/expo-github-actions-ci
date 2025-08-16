@@ -63,7 +63,7 @@ jobs:
 
       - name: Build
         working-directory: ./android
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon --build-cache --parallel
 
   mobile-ios-build:
     runs-on: macos-15
