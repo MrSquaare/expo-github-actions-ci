@@ -18,7 +18,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "fr.mrsquaare.expo-github-actions-ci",
+      "bundleIdentifier": "fr.mrsquaare.expogithubactionsci",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -29,7 +29,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "fr.mrsquaare.expo-github-actions-ci"
+      "package": "fr.mrsquaare.expogithubactionsci"
     },
     "extra": {
       "eas": {
