@@ -45,7 +45,6 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build
-        working-directory: ./apps/mobile
         run: eas build --local --platform android --profile development --non-interactive
 
   mobile-ios-build:
@@ -74,5 +73,4 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build
-        working-directory: ./apps/mobile
         run: eas build --local --platform ios --profile development --non-interactive
