@@ -108,4 +108,4 @@ jobs:
 
       - name: Build
         working-directory: ./ios
-        run: set -o pipefail && xcodebuild build -workspace Lobbium.xcworkspace -scheme Lobbium -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath build | xcbeautify
+        run: set -o pipefail && xcodebuild build -workspace expogithubactionsci.xcworkspace -scheme expogithubactionsci -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath build | xcbeautify
