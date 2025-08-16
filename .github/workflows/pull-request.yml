@@ -33,23 +33,37 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
-      - name: Cache EAS build local
+      - name: Get fingerprint
+        id: fingerprint
+        run: |
+          echo "hash=$(npx @expo/fingerprint fingerprint:generate --platform android | jq -r '.hash')" >> $GITHUB_OUTPUT
+
+      - name: Generate prebuild
+        run: pnpm expo prebuild --platform android --clean --no-install
+
+      - name: Cache Gradle
         uses: actions/cache@v4
         with:
-          path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('pnpm-lock.yaml') }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ steps.fingerprint.outputs.hash }}
           restore-keys: |
-            ${{ runner.os }}-eas-build-local-
+            ${{ runner.os }}-gradle-
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
+      - name: Cache Build
+        uses: actions/cache@v4
         with:
-          eas-version: latest
-          packager: pnpm
-          token: ${{ secrets.EXPO_TOKEN }}
+          path: |
+            android/build
+            android/app/build
+          key: ${{ runner.os }}-build-${{ steps.fingerprint.outputs.hash }}
+          restore-keys: |
+            ${{ runner.os }}-build-
 
       - name: Build
-        run: eas build --local --platform android --profile development --non-interactive
+        working-directory: ./android
+        run: ./gradlew assembleDebug
 
   mobile-ios-build:
     runs-on: macos-15
@@ -64,20 +78,34 @@ jobs:
       - name: Set Xcode version
         run: sudo xcode-select --switch "/Applications/Xcode_16.4.app/Contents/Developer"
 
-      - name: Cache EAS build local
+      - name: Get fingerprint
+        id: fingerprint
+        run: |
+          echo "hash=$(npx @expo/fingerprint fingerprint:generate --platform ios | jq -r '.hash')" >> $GITHUB_OUTPUT
+
+      - name: Generate prebuild
+        run: pnpm expo prebuild --platform ios --clean --no-install
+
+      - name: CocoaPods Cache
         uses: actions/cache@v4
         with:
-          path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('pnpm-lock.yaml') }}
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ steps.fingerprint.outputs.hash }}
           restore-keys: |
-            ${{ runner.os }}-eas-build-local-
+            ${{ runner.os }}-pods-
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
+      - name: Install CocoaPods
+        working-directory: ./ios
+        run: pod install
+
+      - name: Cache Xcode derived data
+        uses: actions/cache@v4
         with:
-          eas-version: latest
-          packager: pnpm
-          token: ${{ secrets.EXPO_TOKEN }}
+          path: ios/build
+          key: ${{ runner.os }}-xcode-derived-data-${{ steps.fingerprint.outputs.hash }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-derived-data-
 
       - name: Build
-        run: eas build --local --platform ios --profile development --non-interactive
+        working-directory: ./ios
+        run: set -o pipefail && xcodebuild build -workspace Lobbium.xcworkspace -scheme Lobbium -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath build | xcbeautify
