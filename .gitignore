@@ -39,3 +39,8 @@ yarn-error.*
 # Expo prebuild
 android/
 ios/
+
+# EAS local build
+*.aab
+*.apk
+*.tar.gz

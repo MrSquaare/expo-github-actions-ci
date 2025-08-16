@@ -1,0 +1,78 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  mobile-export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Export
+        run: pnpm expo export
+
+  mobile-android-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Cache EAS build local
+        uses: actions/cache@v4
+        with:
+          path: ~/.eas-build-local
+          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-eas-build-local-
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          packager: pnpm
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build
+        working-directory: ./apps/mobile
+        run: eas build --local --platform android --profile development --non-interactive
+
+  mobile-ios-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Cache EAS build local
+        uses: actions/cache@v4
+        with:
+          path: ~/.eas-build-local
+          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-eas-build-local-
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          packager: pnpm
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build
+        working-directory: ./apps/mobile
+        run: eas build --local --platform ios --profile development --non-interactive
