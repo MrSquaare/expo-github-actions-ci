@@ -61,6 +61,9 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
+      - name: Set Xcode version
+        run: sudo xcode-select --switch "/Applications/Xcode_16.4.app/Contents/Developer"
+
       - name: Cache EAS build local
         uses: actions/cache@v4
         with:
