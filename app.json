@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "expo-github-actions-ci",
+    "slug": "expo-github-actions-ci",
+    "version": "1.0.0",
+    "platforms": [
+      "android",
+      "ios"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "fr.mrsquaare.expo-github-actions-ci",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "fr.mrsquaare.expo-github-actions-ci"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eaf98243-03c8-43c1-aa14-a8f64c5abcdd"
+      }
+    },
+    "owner": "mrsquaare"
+  }
+}
