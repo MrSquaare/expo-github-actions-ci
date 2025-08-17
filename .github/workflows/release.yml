@@ -63,6 +63,9 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
+      - name: Set Xcode version
+        run: sudo xcode-select --switch "/Applications/Xcode_16.4.app/Contents/Developer"
+
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
