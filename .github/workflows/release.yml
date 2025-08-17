@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: expo
+
+  android-build:
+    runs-on: ubuntu-24.04
+    needs: release
+    if: ${{ needs.release.outputs.release_created == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build
+        run: eas build --platform android --profile development --local --non-interactive --output ./app-build
+
+      - name: Upload
+        run: eas upload --platform android --non-interactive --build-path ./app-build
+
+  ios-build:
+    runs-on: ubuntu-24.04
+    needs: release
+    if: ${{ needs.release.outputs.release_created == 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build
+        run: eas build --platform ios --profile development --local --non-interactive --output ./app-build
+
+      - name: Upload
+        run: eas upload --platform ios --non-interactive --build-path ./app-build
