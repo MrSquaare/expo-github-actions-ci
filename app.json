@@ -2,7 +2,7 @@
   "expo": {
     "name": "expo-github-actions-ci",
     "slug": "expo-github-actions-ci",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "platforms": [
       "android",
       "ios"
