@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/MrSquaare/expo-github-actions-ci/compare/v1.0.0...v1.0.1) (2025-08-17)
+
+
+### Continuous Integration
+
+* update release workflow ([210d265](https://github.com/MrSquaare/expo-github-actions-ci/commit/210d265b2c03475610e27d0c28c2cc2465929b52))
+
 ## 1.0.0 (2025-08-17)
 
 
