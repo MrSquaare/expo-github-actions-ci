@@ -8,7 +8,7 @@
       "ios"
     ],
     "orientation": "portrait",
-    "icon": "./assets/icon-2.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
